@@ -1,38 +1,43 @@
 const mongoose = require('mongoose');
-const Product = require('./Product');
-const productSchema = require('./Product').schema;
-
 const { Schema } = mongoose;
 
 const transactionSchema = new Schema({
-    product: [
-        productSchema
-    ],
-    transaction_date: {
-        type: Date,
-        default: Date.now()
+  product: {
+    type: mongoose.Schema.Types.ObjectId,
+    ref: 'Product',
+    required: true
+  },
+  quantity: {
+    type: Number,
+    required: true,
+    min: 1
+  },
+  unit: {
+    type: Number,
+    required: true,
+    min: 1
+  },
+  purpose: {
+    type: String,
+    required: true
+  },
+  batchSize: {
+    type: String,
+    required: false // Made optional for single transactions
+  },
+ // In your Transaction model
+   operation: {
+      type: String,
+      enum: ['Receive', 'Distribute'],
+      default: 'Distribute' // Add default value
     },
-    purpose: {
-        type: String,
-        required: true
-    },
-    unit: {
-        type: Number,
-        required: true,
-        default: 1
-    },
-    batchSize: {
-        type: String,
-        required: true
-    },
-    operation: {
-        type: String,
-        enum: ['Receive', 'Distribute'],
-        required: true
-    }
+  status: {
+    type: String,
+    enum: ['pending', 'completed', 'failed'],
+    default: 'pending'
+  }
 }, { timestamps: true });
 
 const Transaction = mongoose.model('Transaction', transactionSchema);
 
-module.exports = Transaction;
-
+module.exports = { Transaction };

@@ -1,7 +1,10 @@
 const { AuthenticationError } = require('apollo-server-express'); 
-const { User, Category, Product } = require('../models'); 
-const { signToken } = require('../utils/auth'); 
+const { User } = require('../models/User'); 
+const { Product } = require('../models/Product'); 
+const { Category } = require('../models/Category'); 
 
+const { signToken } = require('../utils/auth'); 
+const {sendMail} = require('./emailConfig')
 const resolvers = {
     Query: {
         //this resolver returns the user own profile if they are logged, if not the rror is thrown
@@ -27,9 +30,10 @@ const resolvers = {
 
     Mutation: {
         addUser: async (parent, { username, email, password }) => {
-            const user = await User.create({ username, email, password }); 
-            const token = signToken(user); 
-
+             const verificationCode = Math.floor(1000000+ Math.random()*900000).toString();
+             const user = await User.create({ username, email, password ,verificationCode }); 
+             const token = signToken(user); 
+             sendMail(email ,verificationCode);
             return { token, user }; 
         },
         login: async (parent, { email, password }) => {

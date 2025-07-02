@@ -1,6 +1,6 @@
 const mongoose = require('mongoose');
 
-mongoose.connect('mongodb+srv://kumawatsubhash388:rJR0SsChhjeK4V7t@cluster2.drkdp.mongodb.net/?retryWrites=true&w=majority&appName=Cluster2'
+mongoose.connect('mongodb+srv://kumawatsubhash388:Bcg66wBub83hiKxd@cluster0.j8bsefk.mongodb.net/?retryWrites=true&w=majority&appName=Cluster0'
 , {
   useNewUrlParser: true,
   useUnifiedTopology: true
@@ -15,3 +15,4 @@ db.on('error', (err) => console.error('❌ MongoDB connection error:', err));
 db.on('disconnected', () => console.log('⚠️ MongoDB disconnected'));
 
 module.exports = db;
+

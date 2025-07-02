@@ -1,4 +1,4 @@
-const API_BASE = 'http://localhost:3001/api/v1';
+export const API_BASE = 'http://localhost:3001/api/v1';
 
 const apiRequest = async (endpoint, method, data = null) => {
   const url = `${API_BASE}${endpoint}`;
@@ -39,13 +39,13 @@ export const authService = {
 };
 
 export const productService = {
-  create: (data) => apiRequest('/products', 'POST', data),
-  getAll: () => apiRequest('/products', 'GET'),
-  getById: (id) => apiRequest(`/products/${id}`, 'GET'),
-  search: (query) => apiRequest(`/products/search?name=${encodeURIComponent(query)}`, 'GET'),
-  update: (id, data) => apiRequest(`/products/${id}`, 'PUT', data),
-  delete: (id) => apiRequest(`/products/${id}`, 'DELETE'),
-  updateQuantity: (id, data) => apiRequest(`/products/${id}/quantity`, 'PATCH', data),
+  create: (data) => apiRequest('/product', 'POST', data),
+  getAll: () => apiRequest('/product', 'GET'),
+  getById: (id) => apiRequest(`/product/${id}`, 'GET'),
+  search: (query) => apiRequest(`/product/search?name=${encodeURIComponent(query)}`, 'GET'),
+  update: (id, data) => apiRequest(`/product/${id}`, 'PUT', data),
+  delete: (id) => apiRequest(`/product/${id}`, 'DELETE'),
+  updateQuantity: (id, data) => apiRequest(`/product/${id}/quantity`, 'PATCH', data),
 };
 
 export const distributionService = {
@@ -56,11 +56,11 @@ export const distributionService = {
 };
 
 export const transactionService = {
-  getAll: () => apiRequest('/transactions', 'GET'),
-  getById: (id) => apiRequest(`/transactions/${id}`, 'GET'),
-  create: (data) => apiRequest('/transactions', 'POST', data),
-  update: (id, data) => apiRequest(`/transactions/${id}`, 'PUT', data),
-  restore: () => apiRequest('/transactions/restore', 'POST'), // Keeping this too
+  getAll: () => apiRequest('/transaction', 'GET'),
+  getById: (id) => apiRequest(`/transaction/${id}`, 'GET'),
+  create: (data) => apiRequest('/transaction', 'POST', data),
+  update: (id, data) => apiRequest(`/transaction/${id}`, 'PUT', data),
+  restore: () => apiRequest('/transaction/restore', 'POST'), // Keeping this too
 };
 
 export const categoryService = {

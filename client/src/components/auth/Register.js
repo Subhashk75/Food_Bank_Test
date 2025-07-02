@@ -1,7 +1,3 @@
-// ==========================
-// React SignupCard Component
-// ==========================
-
 'use client';
 import {
   Flex, Box, FormControl, FormLabel, Input, Stack, Button,
@@ -9,18 +5,19 @@ import {
 } from '@chakra-ui/react';
 import { Link as ReactRouterLink, useNavigate } from 'react-router-dom';
 import { useState, useEffect } from 'react';
-import { authService } from '../../components/utils/api';
+import { API_BASE } from '../../components/utils/api';
 import Auth from '../../components/utils/auth';
+import axios from "axios";
 
 export default function SignupCard() {
   const [formState, setFormState] = useState({
     username: '',
     email: '',
-    password: '',
-    verificationCode: ''
+    password: ''
   });
   const [isLoading, setIsLoading] = useState(false);
   const [otpPhase, setOtpPhase] = useState(false);
+  const [verificationCode, setVerificationCode] = useState('');
   const navigate = useNavigate();
   const toast = useToast();
 
@@ -38,14 +35,13 @@ export default function SignupCard() {
   const handleGetOtp = async () => {
     setIsLoading(true);
     try {
-      const { username, email, password } = formState;
-      const response = await authService.register({ username, email, password });
+      const response = await axios.post(`${API_BASE}/user/getOtp`, { email: formState.email }, { withCredentials: true });
 
-      if (response.success) {
+      if (response.data.success) {
         setOtpPhase(true);
         toast({ title: 'OTP sent to your email', status: 'success', duration: 3000, isClosable: true });
       } else {
-        throw new Error(response.message || 'Failed to send OTP');
+        throw new Error(response.data.message || 'Failed to send OTP');
       }
     } catch (error) {
       toast({ title: 'Error', description: error.message, status: 'error', duration: 3000, isClosable: true });
@@ -63,20 +59,19 @@ export default function SignupCard() {
 
     setIsLoading(true);
     try {
-      const response = await authService.requestOtp({ code: formState?.verificationCode });
+      const payload = {
+        ...formState,
+        verificationCode,
+      };
 
-      if (response.success) {
-        const loginRes = await authService.login({ email: formState?.email, password: formState?.password });
+      const response = await axios.post(`${API_BASE}/user/register`, payload, { withCredentials: true });
 
-        if (loginRes.success) {
-          Auth.login(loginRes.token);
-          toast({ title: 'Account verified and logged in!', status: 'success', duration: 3000, isClosable: true });
-          navigate('/dashboard');
-        } else {
-          throw new Error(loginRes.message);
-        }
+      if (response.data.success) {
+        Auth.login(response.data.token);
+        toast({ title: 'Account verified and logged in!', status: 'success', duration: 3000, isClosable: true });
+        navigate('/dashboard');
       } else {
-        throw new Error(response.message || 'Invalid OTP');
+        throw new Error(response.data.message);
       }
     } catch (error) {
       toast({ title: 'Verification failed', description: error.message, status: 'error', duration: 5000, isClosable: true });
@@ -111,7 +106,7 @@ export default function SignupCard() {
               {otpPhase && (
                 <FormControl id="verificationCode" isRequired>
                   <FormLabel>OTP</FormLabel>
-                  <Input type="text" name="verificationCode" value={formState.verificationCode} onChange={handleChange} />
+                  <Input type="text" name="verificationCode" value={verificationCode} onChange={(e) => setVerificationCode(e.target.value)} />
                 </FormControl>
               )}
 

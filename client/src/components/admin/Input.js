@@ -124,31 +124,46 @@ const handleReceive = async () => {
     return;
   }
 
+  if (!purpose) {
+    toast({
+      title: 'Error',
+      description: 'Please specify the purpose',
+      status: 'error',
+      duration: 3000,
+      isClosable: true,
+    });
+    return;
+  }
+
   setIsLoading(true);
 
   try {
-    // Process each product individually
-    for (const product of products) {
-      await inventoryService.create({
-        name: product.name,
-        quantity: product.quantity,
-        categoryId: product.category // Make sure this is available
-      });
-    }
-    
+    const response = await inventoryService.receive({
+      products, // now products already include unit per item
+      purpose,
+      batch
+    });
+    console.log(response);
     toast({
       title: 'Success',
-      description: 'Products added to inventory',
+      description: 'Products received successfully',
       status: 'success',
       duration: 3000,
       isClosable: true,
     });
-    
+
+    // Reset form
     setProducts([]);
+    setProductName('');
+    setProductQuantity('');
+    setProductId('');
+    setUnit('');
+    setPurpose('');
+    setBatch('');
   } catch (error) {
     toast({
       title: 'Error',
-      description: error.message || 'Failed to add products',
+      description: error.message || 'Failed to receive products',
       status: 'error',
       duration: 5000,
       isClosable: true,
@@ -157,6 +172,7 @@ const handleReceive = async () => {
     setIsLoading(false);
   }
 };
+
 
   return (
     <Flex direction="column" minHeight="100vh">

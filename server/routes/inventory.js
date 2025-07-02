@@ -1,34 +1,13 @@
-const router = require('express').Router();
-
+const express = require('express');
+const router = express.Router();
 const {
-    getAllTransaction,
-    getTransaction,
-    modifyTransaction,
-    addTransaction,
-    restoreTransaction
-} = require('../controllers/transactionController.js');
+  getInventory,
+  createInventoryItem,
+  receiveInventory
+} = require('../controllers/inventoryController');
 
-const buildTransaction = async (req, res) => {
-    const operation = req.body.operation;
-    req.operation = operation;
-    await addTransaction(req, res, "Receive");
-    await restoreTransaction();
-
-}
-const rebuildTransaction = async (req, res) => {
-    await modifyTransaction(req, res);
-    await restoreTransaction();
-
-}
-router.route('/')
-    .get(getAllTransaction)
-    .post(buildTransaction);
-
-router
-    .route('/:transactionId')
-    .get(getTransaction)
-
-router.route('/:transactionId')
-    .put(rebuildTransaction);
+router.get('/', getInventory);
+router.post('/', createInventoryItem);
+router.post('/receive', receiveInventory); // Add this line
 
 module.exports = router;

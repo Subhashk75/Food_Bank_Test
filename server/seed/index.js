@@ -1,5 +1,6 @@
 const connection = require('../config/connection');
-const { Product, Transaction, Category } = require('../models');
+const { Product } = require('../models/Product');
+const {Category} = require('../models/Category')
 
 connection.on('error', (err) => console.error(err));
 
