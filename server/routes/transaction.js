@@ -8,30 +8,50 @@ const {
   restoreTransaction
 } = require('../controllers/transactionController');
 
-// Create a new transaction (e.g., receive or distribute)
-router.post('/', async (req, res, next) => {
-  try {
-    await createTransaction(req, res);
-    await restoreTransaction();
-  } catch (error) {
-    next(error);
-  }
-});
+const { authMiddleware, authorizeRoles } = require('../utils/auth');
 
-// Update an existing transaction
-router.put('/:id', async (req, res, next) => {
-  try {
-    await updateTransaction(req, res);
-    await restoreTransaction();
-  } catch (error) {
-    next(error);
-  }
-});
+// ✅ Create a new transaction (receive or distribute)
+// Only 'admin' and 'staff' can create
+router.post(
+  '/',
+  authMiddleware,
+  authorizeRoles('admin', 'staff'),
+  createTransaction
+);
 
-// Get all transactions
-router.get('/', getAllTransactions);
+// ✅ Update an existing transaction
+// Only 'admin' can update
+router.put(
+  '/:id',
+  authMiddleware,
+  authorizeRoles('admin'),
+  updateTransaction
+);
 
-// Get a specific transaction by ID
-router.get('/:id', getTransactionById);
-router.post("/restore" , restoreTransaction);
+// ✅ Get all transactions
+// All roles: admin, staff, volunteer
+router.get(
+  '/',
+  authMiddleware,
+  authorizeRoles('admin', 'staff', 'volunteer'),
+  getAllTransactions
+);
+
+// ✅ Get a specific transaction by ID
+router.get(
+  '/:id',
+  authMiddleware,
+  authorizeRoles('admin', 'staff', 'volunteer'),
+  getTransactionById
+);
+
+// ✅ Restore inventory from transactions
+// Only 'admin' allowed
+router.post(
+  '/restore',
+  authMiddleware,
+  authorizeRoles('admin'),
+  restoreTransaction
+);
+
 module.exports = router;

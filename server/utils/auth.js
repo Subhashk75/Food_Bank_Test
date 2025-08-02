@@ -1,32 +1,36 @@
-const jwt = require('jsonwebtoken'); 
-
+const jwt = require('jsonwebtoken');
 const secret = 'mysecretsshhhhh';
-const expiration = '2h'; 
+const expiration = '2h';
 
 module.exports = {
-    authMiddleware: function ({ req }) {
-        let token = req.body.token || req.query.token || req.headers.authorization; 
+  authMiddleware: function (req, res, next) {
+    let token = req.headers.authorization;
+    if (token && token.startsWith('Bearer ')) {
+      token = token.split(' ')[1];
+    }
 
-        if (req.headers.authorization) {
-            token = token.split(' ').pop().trim(); 
-        }
+    if (!token) return res.status(401).json({ message: 'No token provided.' });
 
-        if (!token) {
-            return req; 
-        }
+    try {
+      const { data } = jwt.verify(token, secret, { maxAge: expiration });
+      req.user = data;
+      next();
+    } catch (err) {
+      return res.status(401).json({ message: 'Invalid or expired token.' });
+    }
+  },
 
-        try {
-            const { data } = jwt.verify(token, secret, {maxAge: expiration}); 
-            req.user = data; 
-        } catch (err) {
-            console.log('Invalid token:', err.message); 
-        }
+  authorizeRoles: (...roles) => {
+    return (req, res, next) => {
+      if (!roles.includes(req.user.role)) {
+        return res.status(403).json({ message: 'Access denied: insufficient role' });
+      }
+      next();
+    };
+  },
 
-        return req; 
-    },
-    signToken: function ({ username, email, _id }) {
-        const payload = { username, email, _id }; 
-
-        return jwt.sign({ data: payload }, secret, { expiresIn: expiration }); 
-    },
-}; 
+  signToken: function ({ username, email, _id, role }) {
+    const payload = { username, email, _id, role };
+    return jwt.sign({ data: payload }, secret, { expiresIn: expiration });
+  }
+};

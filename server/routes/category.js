@@ -5,8 +5,24 @@ const {
   createCategory
 } = require('../controllers/categoryController');
 
-router.route('/')
-    .get(getAllCategories)
-    .post(createCategory);
+const { authMiddleware, authorizeRoles } = require('../utils/auth');
+
+// ✅ Get all categories
+// Accessible by all roles
+router.get(
+  '/',
+  authMiddleware,
+  authorizeRoles('admin', 'staff', 'volunteer'),
+  getAllCategories
+);
+
+// ✅ Create a new category
+// Only 'admin' and 'staff' allowed
+router.post(
+  '/',
+  authMiddleware,
+  authorizeRoles('admin', 'staff'),
+  createCategory
+);
 
 module.exports = router;

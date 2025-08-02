@@ -49,6 +49,7 @@ function InventoryManagement() {
       setLoading(true);
       setError(null);
       const response = await productService.getAll();
+      console.log(response);
       if (response.success) {
         setProducts(response.data || []);
       } else {

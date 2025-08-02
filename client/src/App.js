@@ -22,8 +22,7 @@ import AboutUs from './components/admin/AboutUs';
 import ProductList from './pages/productlist';
 import AddItem from './pages/additem';
 import ModifyItem from './pages/modifyitem';
-import BoM from "./pages/DistributionRequest";
-import DistributionReport from "./pages/DistributionReportPage";
+
 
 function App() {
   return (
@@ -50,9 +49,7 @@ function App() {
             <Route path="/modifyitem" element={<ModifyItem />} />
             <Route path="/modifyitem/:productId" element={<ModifyItem />} />
 
-            {/* Distribution Reports */}
-            <Route path="/BoM" element={<BoM />} />
-            <Route path="/distributionreport" element={<DistributionReport />} />
+           
 
             {/* Static Pages */}
             <Route path="/privacy" element={<PrivacyPolicy />} />

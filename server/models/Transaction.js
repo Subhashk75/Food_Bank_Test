@@ -13,7 +13,7 @@ const transactionSchema = new Schema({
     min: 1
   },
   unit: {
-    type: Number,
+    type: String,
     required: true,
     min: 1
   },

@@ -33,9 +33,9 @@ const apiRequest = async (endpoint, method, data = null) => {
 };
 
 export const authService = {
-  register: (data) => apiRequest('/users/register', 'POST', data),
-  login: (data) => apiRequest('/users/login', 'POST', data),
-  requestOtp: (code) => apiRequest('/users/getOtp', 'POST', code),
+  register: (data) => apiRequest('/user/register', 'POST', data),
+  login: (data) => apiRequest('/user/login', 'POST', data),
+  requestOtp: (code) => apiRequest('/user/getOtp', 'POST', code),
 };
 
 export const productService = {

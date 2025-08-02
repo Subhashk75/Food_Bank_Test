@@ -6,23 +6,26 @@ const {Product} = require("../models/Product")
 // @route   GET /api/v1/transactions
 const getAllTransactions = async (req, res) => {
   try {
-    const transactions = await Transaction.find()
-      .populate('product', 'name quantity unit')
-      .sort({ createdAt: -1 });
-    
+   const transactions = await Transaction.find()
+          .populate('product', 'name')
+          .sort({ createdAt: -1 });
+
+     
+      console.log(transactions);
     res.status(200).json({
       success: true,
       count: transactions.length,
       data: transactions
     });
   } catch (err) {
-    res.status(500).json({ 
-      success: false, 
+    res.status(500).json({
+      success: false,
       message: 'Server error while fetching transactions',
-      error: err.message 
+      error: err.message
     });
   }
 };
+
 
 // @desc    Get transaction by ID
 // @route   GET /api/v1/transactions/:id
@@ -54,79 +57,61 @@ const getTransactionById = async (req, res) => {
 // @desc    Create new transaction (Distribute or Receive)
 // @route   POST /api/v1/transactions
 const createTransaction = async (req, res) => {
-  const session = await mongoose.startSession();
-  session.startTransaction();
-  
   try {
     const { product, quantity, unit, operation, purpose, batchSize } = req.body;
 
     // Validate required fields
     if (!product || !quantity || !unit || !operation || !purpose) {
-      await session.abortTransaction();
-      return res.status(400).json({
-        success: false,
-        message: 'Missing required fields: product, quantity, unit, operation, purpose'
-      });
+      return res.status(400).json({ success: false, message: 'Missing required fields' });
     }
 
-    // Check product exists
-    const productDoc = await Product.findById(product).session(session);
+    // Validate operation type
+    if (!['Distribute', 'Receive'].includes(operation)) {
+      return res.status(400).json({ success: false, message: 'Invalid operation type' });
+    }
+
+    const productDoc = await Product.findById(product);
     if (!productDoc) {
-      await session.abortTransaction();
-      return res.status(404).json({
-        success: false,
-        message: 'Product not found'
-      });
+      return res.status(404).json({ success: false, message: 'Product not found' });
     }
 
-    // Validate quantity for distribution
-    if (operation === 'Distribute' && productDoc.quantity < quantity * unit) {
-      await session.abortTransaction();
+    // Map units to base quantities
+    const unitMap = { pcs: 1, kg: 1, g: 0.001, l: 1, ml: 0.001, box: 10, pack: 5 };
+    const multiplier = unitMap[unit] || 1;
+    const quantityInBase = quantity * multiplier;
+
+    // Check for sufficient stock in distribution
+    if (operation === 'Distribute' && productDoc.quantity < quantityInBase) {
       return res.status(400).json({
         success: false,
-        message: `Insufficient quantity. Available: ${productDoc.quantity}, Requested: ${quantity * unit}`
+        message: `Insufficient stock. Available: ${productDoc.quantity}, Needed: ${quantityInBase}`
       });
     }
 
     // Create transaction
-    const transaction = await Transaction.create([{
+    const transaction = await Transaction.create({
       product,
       quantity,
       unit,
       operation,
       purpose,
-      batchSize,
+      batchSize: batchSize || null, // optional
       status: 'completed'
-    }], { session });
+    });
 
     // Update product quantity
-    const quantityChange = operation === 'Distribute' ? -quantity * unit : quantity * unit;
-    await Product.findByIdAndUpdate(
-      product,
-      { $inc: { quantity: quantityChange } },
-      { session, new: true }
-    );
+    const quantityChange = operation === 'Distribute' ? -quantityInBase : quantityInBase;
+    await Product.findByIdAndUpdate(product, { $inc: { quantity: quantityChange } });
 
-    await session.commitTransaction();
-    
-    const createdTransaction = await Transaction.findById(transaction[0]._id)
-      .populate('product', 'name quantity unit');
-    
-    res.status(201).json({ 
-      success: true, 
-      data: createdTransaction 
-    });
+    return res.status(201).json({ success: true, data: transaction });
+
   } catch (err) {
-    await session.abortTransaction();
-    res.status(500).json({ 
-      success: false, 
-      message: 'Transaction creation failed',
-      error: err.message 
-    });
-  } finally {
-    session.endSession();
+    console.error("Transaction Error:", err);
+    return res.status(500).json({ success: false, message: 'Transaction creation failed', error: err.message });
   }
 };
+
+
 
 // @desc    Update a transaction
 // @route   PUT /api/v1/transactions/:id

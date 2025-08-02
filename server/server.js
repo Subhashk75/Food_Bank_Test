@@ -8,7 +8,6 @@ const app = express();
 const productRoute = require("./routes/product");
 const transactionRoute = require("./routes/transaction")
 const inventoryRoute = require("./routes/Inventory")
-const distributionRoute = require("./routes/distribution")
 const categoriesRoute = require("./routes/category")
 // Middleware
 app.use(cors({
@@ -25,7 +24,6 @@ app.use('/api/v1/user', userRoute);
 app.use('/api/v1/product', productRoute);
 app.use('/api/v1/transaction' , transactionRoute);
 app.use('/api/v1/inventory' , inventoryRoute);
-app.use('/api/v1/distribution' , distributionRoute);
 app.use('/api/v1/categories' ,categoriesRoute );
 
 

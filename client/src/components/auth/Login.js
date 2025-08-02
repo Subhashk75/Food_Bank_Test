@@ -1,21 +1,24 @@
 'use client'
-import { Button, Flex, Text, FormControl, FormLabel, Heading, Input, Stack, Image, Box, Link, useToast } from '@chakra-ui/react';
+import { Button, Flex, Text, FormControl, FormLabel, Heading, Input, Stack, Image, Box, Link, useToast, Select } from '@chakra-ui/react';
 import { Link as ReactRouterLink, useNavigate } from 'react-router-dom';
 import { useState, useEffect } from 'react';
 import { authService } from '../../components/utils/api';
 import Auth from '../../components/utils/auth';
 
 const Login = () => {
-  const [formState, setFormState] = useState({ email: '', password: '' });
+  const [formState, setFormState] = useState({ email: '', password: '', role: '' });
   const [isLoading, setIsLoading] = useState(false);
   const navigate = useNavigate();
   const toast = useToast();
 
   useEffect(() => {
-    if (Auth.loggedIn()) {
-      navigate('/dashboard');
-    }
-  }, [navigate]);
+  if (Auth.loggedIn()) {
+    // Navigate only once
+    navigate('/dashboard', { replace: true });
+  }
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+}, []); // ✅ empty array: runs once on mount
+
 
   const handleChange = (e) => {
     const { name, value } = e.target;
@@ -25,10 +28,10 @@ const Login = () => {
   const handleSubmit = async (e) => {
     e.preventDefault();
     setIsLoading(true);
-    
+
     try {
       const response = await authService.login(formState);
-      
+      console.log(response)
       if (response.success) {
         Auth.login(response.token);
         toast({
@@ -60,7 +63,7 @@ const Login = () => {
         <Stack spacing={4} w={'full'} maxW={'md'}>
           <Image src='../../images/logo.png' alt="logo" />
           <Heading fontSize={'2xl'}>Sign in to your account</Heading>
-          
+
           <form onSubmit={handleSubmit}>
             <FormControl id="email" isRequired>
               <FormLabel>Email address</FormLabel>
@@ -71,7 +74,7 @@ const Login = () => {
                 onChange={handleChange}
               />
             </FormControl>
-            
+
             <FormControl id="password" isRequired>
               <FormLabel>Password</FormLabel>
               <Input 
@@ -81,7 +84,17 @@ const Login = () => {
                 onChange={handleChange}
               />
             </FormControl>
-            
+
+            <FormControl id="role" isRequired>
+              <FormLabel>User Role</FormLabel>
+              <Select name="role" value={formState.role} onChange={handleChange}>
+                <option value="">Select Role</option>
+                <option value="admin">admin</option>
+                <option value="staff">Staff</option>
+                <option value="volunteer" >Volunteer</option>
+              </Select>
+            </FormControl>
+
             <Stack spacing={6} mt={4}>
               <Button 
                 colorScheme={'blue'} 
@@ -94,7 +107,7 @@ const Login = () => {
               </Button>
             </Stack>
           </form>
-          
+
           <Box textAlign="center">
             New to us?{" "}
             <Link color="blue.500" as={ReactRouterLink} to='/register'>
@@ -103,7 +116,7 @@ const Login = () => {
           </Box>
         </Stack>
       </Flex>
-      
+
       <Flex flex={1} display={{ base: 'none', md: 'flex' }}>
         <Image
           src={'../../images/food.jpg'}

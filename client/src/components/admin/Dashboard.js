@@ -32,8 +32,7 @@ function Dashboard() {
   const [inventory, setInventory] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
-  const [productIndex, setProductIndex] = useState(null);
-  const [clicked, setClicked] = useState(false);
+
   const isMobile = useBreakpointValue({ base: true, md: false });
   const navigate = useNavigate();
   const bg = useColorModeValue("white", "gray.800");
@@ -46,12 +45,12 @@ function Dashboard() {
 
   useEffect(() => {
     let isMounted = true;
-    
+
     const fetchData = async () => {
       try {
         setLoading(true);
         setError(null);
-        
+
         const results = await Promise.allSettled([
           transactionService.getAll(),
           productService.getAll(),
@@ -83,22 +82,12 @@ function Dashboard() {
     };
   }, []);
 
-  const handleClick = (index) => {
-    if (index !== productIndex) {
-      setClicked(true);
-      setProductIndex(index);
-    } else {
-      setClicked(false);
-      setProductIndex(null);
-    }
-  };
-
   if (loading) return <Text>Loading...</Text>;
   if (error) return <Text>Error: {error}</Text>;
 
   const totalProducts = products.length;
   const totalCategories = categories.length;
-  const totalQuantity = Array.isArray(inventory) 
+  const totalQuantity = Array.isArray(inventory)
     ? inventory.reduce((sum, item) => sum + (item.quantity || 0), 0)
     : 0;
 
@@ -126,6 +115,7 @@ function Dashboard() {
                 <StatHelpText>Total kg in stock</StatHelpText>
               </Stat>
             </Flex>
+
             <Box overflowX="auto">
               {transactions.length > 0 ? (
                 <Table variant="simple">
@@ -133,8 +123,9 @@ function Dashboard() {
                     <Tr>
                       <Th>Op.</Th>
                       {!isMobile && <Th>Operation</Th>}
-                      <Th>Products No.</Th>
-                      <Th>Units</Th>
+                      <Th>Product</Th>
+                      <Th>Qty</Th>
+                      <Th>Unit</Th>
                       <Th>Total</Th>
                       {!isMobile && (
                         <>
@@ -147,36 +138,31 @@ function Dashboard() {
                   </Thead>
                   <Tbody>
                     {transactions.map((transaction, index) => {
-                      const products = transaction.products || [];
+                      const product = transaction.product || {};
+                      const total = transaction.quantity * transaction.unit;
+
                       return (
-                        <React.Fragment key={index}>
-                          <Tr onClick={() => handleClick(index)} style={{ cursor: "pointer" }}>
-                            <Td>
-                              {transaction.operation === "Receive" ? (
-                                <MdCallReceived color="green" />
-                              ) : (
-                                <MdCallMade color="red" />
-                              )}
-                            </Td>
-                            {!isMobile && <Td>{transaction.operation}</Td>}
-                            <Td>{products.length}</Td>
-                            <Td>{transaction.unit}</Td>
-                            <Td>
-                              {products
-                                .reduce((sum, product) => sum + (product.quantity * transaction.unit), 0)}
-                            </Td>
-                            {!isMobile && (
-                              <>
-                                <Td>{transaction.purpose}</Td>
-                                <Td>{transaction.batchSize}</Td>
-                                <Td>{new Date(transaction.createdAt).toLocaleDateString()}</Td>
-                              </>
+                        <Tr key={index}>
+                          <Td>
+                            {transaction.operation === "Receive" ? (
+                              <MdCallReceived color="green" />
+                            ) : (
+                              <MdCallMade color="red" />
                             )}
-                          </Tr>
-                          {clicked && productIndex === index && (
-                            <OpenProductList data={products} unit={transaction.unit} />
+                          </Td>
+                          {!isMobile && <Td>{transaction.operation}</Td>}
+                          <Td>{product.name || "N/A"}</Td>
+                          <Td>{transaction.quantity}</Td>
+                          <Td>{transaction.unit}</Td>
+                          <Td>{total}</Td>
+                          {!isMobile && (
+                            <>
+                              <Td>{transaction.purpose}</Td>
+                              <Td>{transaction.batchSize || "-"}</Td>
+                              <Td>{new Date(transaction.createdAt).toLocaleDateString()}</Td>
+                            </>
                           )}
-                        </React.Fragment>
+                        </Tr>
                       );
                     })}
                   </Tbody>
@@ -190,29 +176,6 @@ function Dashboard() {
       </Flex>
       <Footer />
     </Flex>
-  );
-}
-
-function OpenProductList({ data, unit }) {
-  if (!Array.isArray(data)) return null;
-
-  return (
-    <>
-      <Tr>
-        <Td><strong>Name</strong></Td>
-        <Td><strong>Quantity</strong></Td>
-        <Td><strong>Units</strong></Td>
-        <Td><strong>Total</strong></Td>
-      </Tr>
-      {data.map((product, index) => (
-        <Tr key={index}>
-          <Td>{product.name}</Td>
-          <Td>{product.quantity}</Td>
-          <Td>{unit}</Td>
-          <Td>{product.quantity * unit}</Td>
-        </Tr>
-      ))}
-    </>
   );
 }
 

@@ -24,7 +24,7 @@ const inventorySchema = new mongoose.Schema({
     type: String,
     required: true
   },
-  batch: String,
+  batchSize: String,
   receivedBy: {
     type: mongoose.Schema.Types.ObjectId,
     ref: 'User',
@@ -34,4 +34,5 @@ const inventorySchema = new mongoose.Schema({
   timestamps: true
 });
 
-module.exports = mongoose.model('Inventory', inventorySchema);
+const Inventory = mongoose.model('Inventory', inventorySchema);
+module.exports={Inventory};

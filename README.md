@@ -1,112 +1,95 @@
 # 🌽 FoodBank
 
-[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
+🥫 Food Bank Inventory & Distribution Management System
+The Food Bank Inventory & Distribution Management System is a full-stack web application designed to streamline the operations of food banks. It helps efficiently track, manage, and distribute food resources to individuals and organizations in need.
 
-## ✍🏼 Description
+This system allows food bank staff to:
 
-According to the CONEVAL (Consejo Nacional de Evaluacion de la Politica de Desarrollo Social) found that 22.5% of the population in Mexico are at risk due to a lack of access of nutrititous good quality food.
+Register and manage food items and inventory levels
 
-FoodBank is an idea created as a tool to help the most vulnerable in our community. With the intent to bridge communities to food banks we have created FoodBank. It was thoughtout to be equitable to the community, intuite for its users and innovative for future development.
+Record incoming supplies (donations or purchases)
 
-Using React, mongoDB, Chakra UI and the skills of a multitalented team we have created FoodBank.
+Track outgoing distributions (to individuals, groups, or partner organizations)
 
-<img src="foodbank/client/src/assets/girl-apples.png" style="height: 30vh; margin-left: auto; margin-right: auto;" />
+Maintain categories, units, batch info, and transaction history
 
-## 📄 Table Content
+Gain insights through a dashboard with distribution and inventory metrics
 
-- [Important Links](#important-links)
-- [Installation Instructions](#installation-instructions)
-- [Usage Information](#usage-information)
-- [License](#license)
-- [Questions](#questions)
-- [Credits](#👩🏻‍💻👨🏻‍💻credits)
+🔧 Tech Stack
+Frontend: React.js, Chakra UI, Axios
 
-## ‼️ Important Links
+Backend: Node.js, Express.js
 
-- [Github Repository](https://github.com/jony0418/FoodBank.git)
-- [Walkthrough Video]()
-- [Project Presentation]()
+Database: MongoDB with Mongoose ODM
 
-## 💻 Technologies
+Others: JWT for authentication, RESTful API architecture
 
-FoodBank also uses a variety of dependencies to make this application funtion:
+✅ Key Features
+🗃 Product & Category Management:
+Add, update, and manage food items with associated categories and units.
 
-```
-- concurrently: "^5.1.0"
-- @chakra-ui: "^1.0.0",
-- graphql: "^15.4.0",
-- date-fns": "^2.30.0".
-- @apollo/client: "^3.3.7"
-- eslint: "^8.47.0"
-```
+📥 Inventory Receiving:
+Record incoming stock with quantity, batch, and purpose details.
 
-</br>
+📤 Product Distribution:
+Log outgoing distributions to track how much food has been given and to whom.
 
-<div style="display: inline_block">
+📊 Dashboard Overview:
+Visualize total inventory, daily distributions, and receive history.
 
-<img src="foodbank/client/src/assets/javascript.svg" style="height: 13vh; padding: 5vw" />
-<img src="foodbank/client/src/assets/mongodb.svg" style="height: 13vh; padding: 5vw" />
-<img src="foodbank/client/src/assets/node-js.webp" style="height: 13vh; padding: 5vw" /> 
-<img src="foodbank/client/src/assets/graphql.svg.png" style="height: 13vh; padding: 5vw" />
-<img src="foodbank/client/src/assets/react.svg" style="height: 13vh; padding: 5vw" />
-<img src="foodbank/client/src/assets/chakraui.png" style="height: 13vh; padding: 5vw" />
+🔎 Product Suggestions:
+Search and select products efficiently during transactions.
 
-</div>
+📚 Transaction History:
+View logs of all receive and distribute transactions for transparency and reporting.
 
-</br>
+📁 Modules
+Product: CRUD for food items
 
-## 🛠️ Installation
+Category: Manage categories (e.g., Grains, Canned, Fresh)
 
-To successfully install this proyect follow the guideline:
+Transaction: Handles both Receive and Distribute
 
-1. Clone the repository:
+Inventory: Real-time quantity tracking
 
-   `https://github.com/jony0418/FoodBank.git`
+User Auth: Role-based access and login (if implemented)
 
-2. Install your backend and frontend dependencies
+🚀 How to Run Locally
+Clone the repository
 
-   `npm i`
+bash
+Copy
+Edit
+git clone https://github.com/Subhashk75/Food_Bank_System.git
+cd food-bank-inventory
+Install dependencies for both backend and frontend:
 
-## 👨🏽‍🌾 User Story
+bash
+Copy
+Edit
+cd backend && npm install
+cd ../frontend && npm install
+Configure environment variables (MongoDB URI, JWT secret, etc.)
 
-```
-Dashboard and Overview
+Start the backend and frontend servers:
 
-Given that I am an authorized user of the food bank platform,
-When I log in to the platform with my credentials,
-Then I should be directed to the dashboard that provides an overview of the current recent distribution activities, and relevant statistics through graphical representations.
+bash
+Copy
+Edit
+cd backend && npm start
+cd ../frontend && npm start
+Access the app at http://localhost:3000
 
- Adding Products to Inventory
+📌 Future Enhancements
+Role-based permissions (Admin, Staff, Volunteer)
 
-Given that I am on the dashboard,
-When I select the "Add New Product" option,
-Then I should be able to input details such as product name, and quantity.
-And upon submission, the product should be added to the inventory.
+Exportable reports (PDF/CSV)
 
-Managing Inventory
+Low-stock alerts
 
-Given that I am on the dashboard,
-When I navigate to the "Inventory Management" section,
-Then I should be able to view the list of all products in the inventory with their current quantities,
-And I should have the option to edit product details or quantities if needed,
-And I should be able to remove products from the inventory.
+Donor and recipient history tracking
 
-Tracking Distribution History
-
-Given that I am on the dashboard,
-When I navigate to the "Distribution History" section,
-Then I should see a chronological list of all distribution activities, including product details,
-
-Recording Product Distribution
-
-Given that I am on the dashboard,
-When I access the "Distribution Management" section,
-Then I should be able to record the distribution of products by number of families.
-And upon distribution, the inventory quantity of the distributed product should be automatically updated.
-
-```
-
-## 📈 Usage
+Let me know if you'd like this adapted for a specific deployment (Render, Vercel), or if you want a full README.md template with setup, env files, and screenshots!
 
 To begin using this application follow the next steps:
 
@@ -130,18 +113,5 @@ Not Applicable
 
 If you have any questions you may contact any of the contributing members.
 
-## 👩🏻‍💻👨🏻‍💻 Credits
 
-This proyect was created by:
 
-- [Rodrigo Roldan](https://github.com/RodrigoRoL);
-- [Gerardo Garcia-Salas](https://github.com/SalasGS94);
-- [Santiago Valenzuela](https://github.com/santis1001);
-- [Jose Maria Hernandez ](https://github.com/ChemaKing13);
-- [Isabella Ruiz](https://github.com/isanator2000)
-- [Jonathan Becerra](https://github.com/jony0418);
-- [Andrea Ceron](https://github.com/aceron2205)
-
-## License
-
-This application is covered under the MIT License. For more info, click here: [License: MIT](https://opensource.org/licenses/MIT)

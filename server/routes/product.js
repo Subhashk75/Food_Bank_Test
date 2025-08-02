@@ -10,18 +10,62 @@ const {
   updateProductQuantity
 } = require('../controllers/productController');
 
+const { authMiddleware, authorizeRoles } = require('../utils/auth');
 
-router.route('/')
-    .post(createProduct)
-    .get(getAllProducts);
+// ✅ Create product (admin only)
+router.post(
+  '/',
+  authMiddleware,
+  authorizeRoles('admin'),
+  createProduct
+);
 
-router.get('/search', searchProducts);
+// ✅ Get all products (admin, staff, volunteer)
+router.get(
+  '/',
+  authMiddleware,
+  authorizeRoles('admin', 'staff', 'volunteer'),
+  getAllProducts
+);
 
-router.route('/:id')
-    .get(getProductById)
-    .put(updateProduct)
-    .delete(deleteProduct);
+// ✅ Search products (admin, staff, volunteer)
+router.get(
+  '/search',
+  authMiddleware,
+  authorizeRoles('admin', 'staff', 'volunteer'),
+  searchProducts
+);
 
-router.patch('/:id/quantity', updateProductQuantity);
+// ✅ Get product by ID (admin, staff, volunteer)
+router.get(
+  '/:id',
+  authMiddleware,
+  authorizeRoles('admin', 'staff', 'volunteer'),
+  getProductById
+);
+
+// ✅ Update product (admin only)
+router.put(
+  '/:id',
+  authMiddleware,
+  authorizeRoles('admin'),
+  updateProduct
+);
+
+// ✅ Delete product (admin only)
+router.delete(
+  '/:id',
+  authMiddleware,
+  authorizeRoles('admin'),
+  deleteProduct
+);
+
+// ✅ Update product quantity (admin, staff)
+router.patch(
+  '/:id/quantity',
+  authMiddleware,
+  authorizeRoles('admin', 'staff'),
+  updateProductQuantity
+);
 
 module.exports = router;
