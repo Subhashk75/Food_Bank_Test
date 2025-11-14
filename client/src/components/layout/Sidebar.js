@@ -15,7 +15,6 @@ import {
   MdOutlineModeEdit,
   MdOutlineInput,
   MdOutlineOutput,
-  MdAssignment,
   MdListAlt,
   MdAddBox,
 } from 'react-icons/md';
@@ -25,7 +24,60 @@ function Sidebar() {
   const hoverBg = useColorModeValue('gray.200', 'gray.600');
   const color = useColorModeValue('gray.700', 'gray.200');
   const isMobile = useBreakpointValue({ base: true, md: false });
-  const role = localStorage.getItem('userRole');
+
+  const role = localStorage.getItem('role');
+
+  // Role-based menu items
+  const menuItems = [
+    {
+      label: 'Dashboard',
+      icon: MdDashboard,
+      to: '/dashboard',
+      roles: ['admin', 'staff', 'volunteer'],
+    },
+    {
+      label: 'View Inventory',
+      icon: MdInventory,
+      to: '/inventory',
+      roles: ['admin', 'staff', 'volunteer'],
+    },
+    {
+      label: 'Distribution',
+      icon: MdLocalShipping,
+      to: '/distribution',
+      roles: ['admin', 'staff'], // volunteer only view inside distribution page if you want
+    },
+    {
+      label: 'Inputs (Receiving Stock)',
+      icon: MdOutlineInput,
+      to: '/inputs',
+      roles: ['admin', 'staff'],
+    },
+    {
+      label: 'Outputs',
+      icon: MdOutlineOutput,
+      to: '/output',
+      roles: ['admin'],
+    },
+    {
+      label: 'Product List',
+      icon: MdListAlt,
+      to: '/productlist',
+      roles: ['admin', 'staff'],
+    },
+    {
+      label: 'Modify Items',
+      icon: MdOutlineModeEdit,
+      to: '/modifyitem',
+      roles: ['admin', 'staff'], // allow staff to update stock
+    },
+    {
+      label: 'Add New Item',
+      icon: MdAddBox,
+      to: '/additem',
+      roles: ['admin', 'staff'], // only admin+staff can add items
+    },
+  ];
 
   return (
     <Flex
@@ -38,88 +90,20 @@ function Sidebar() {
       wrap={isMobile ? 'nowrap' : 'wrap'}
       minWidth={['100%', '70%', '25%', '15%']}
     >
-      <Tooltip label="Dashboard" placement="right">
-        <Link
-          as={ReactRouterLink}
-          to="/dashboard"
-          {...linkProps(color, hoverBg)}
-          mt={10}
-        >
-          <Icon as={MdDashboard} />
-        </Link>
-      </Tooltip>
-
-      {(role === 'admin' || role === 'staff') && (
-        <>
-          <Tooltip label="Inventory Management" placement="right">
-            <Link as={ReactRouterLink} to="/inventory" {...linkProps(color, hoverBg)}>
-              <Icon as={MdInventory} />
+      {menuItems
+        .filter(item => item.roles.includes(role))
+        .map(({ label, icon, to }) => (
+          <Tooltip key={label} label={label} placement="right">
+            <Link
+              as={ReactRouterLink}
+              to={to}
+              {...linkProps(color, hoverBg)}
+              mt={label === 'Dashboard' ? 10 : 0}
+            >
+              <Icon as={icon} />
             </Link>
           </Tooltip>
-
-          <Tooltip label="Distribution" placement="right">
-            <Link as={ReactRouterLink} to="/distribution" {...linkProps(color, hoverBg)}>
-              <Icon as={MdLocalShipping} />
-            </Link>
-          </Tooltip>
-
-          <Tooltip label="Inputs" placement="right">
-            <Link as={ReactRouterLink} to="/inputs" {...linkProps(color, hoverBg)}>
-              <Icon as={MdOutlineInput} />
-            </Link>
-          </Tooltip>
-
-          <Tooltip label="Product List" placement="right">
-            <Link as={ReactRouterLink} to="/productlist" {...linkProps(color, hoverBg)}>
-              <Icon as={MdListAlt} />
-            </Link>
-          </Tooltip>
-
-          <Tooltip label="Distribution Report" placement="right">
-            <Link as={ReactRouterLink} to="/distributionreport" {...linkProps(color, hoverBg)}>
-              <Icon as={MdAssignment} />
-            </Link>
-          </Tooltip>
-        </>
-      )}
-
-      {role === 'admin' && (
-        <>
-          <Tooltip label="Outputs" placement="right">
-            <Link as={ReactRouterLink} to="/output" {...linkProps(color, hoverBg)}>
-              <Icon as={MdOutlineOutput} />
-            </Link>
-          </Tooltip>
-
-          <Tooltip label="Modify Items" placement="right">
-            <Link as={ReactRouterLink} to="/modifyitem" {...linkProps(color, hoverBg)}>
-              <Icon as={MdOutlineModeEdit} />
-            </Link>
-          </Tooltip>
-
-          <Tooltip label="Add New Item" placement="right">
-            <Link as={ReactRouterLink} to="/additem" {...linkProps(color, hoverBg)}>
-              <Icon as={MdAddBox} />
-            </Link>
-          </Tooltip>
-        </>
-      )}
-
-      {role === 'volunteer' && (
-        <>
-          <Tooltip label="View Inventory" placement="right">
-            <Link as={ReactRouterLink} to="/inventory" {...linkProps(color, hoverBg)}>
-              <Icon as={MdInventory} />
-            </Link>
-          </Tooltip>
-
-          <Tooltip label="My Distributions" placement="right">
-            <Link as={ReactRouterLink} to="/distribution" {...linkProps(color, hoverBg)}>
-              <Icon as={MdLocalShipping} />
-            </Link>
-          </Tooltip>
-        </>
-      )}
+        ))}
     </Flex>
   );
 }
