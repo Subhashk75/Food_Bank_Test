@@ -5,7 +5,7 @@ import {
 } from '@chakra-ui/react';
 import { Link as ReactRouterLink, useNavigate } from 'react-router-dom';
 import { useState, useEffect } from 'react';
-import { API_BASE } from '../../components/utils/api';
+import { API_BASE } from '../utils/api';
 import Auth from '../../components/utils/auth';
 import axios from "axios";
 
@@ -33,40 +33,36 @@ export default function SignupCard() {
     setFormState((prev) => ({ ...prev, [name]: value }));
   };
 
-  const handleGetOtp = async () => {
-    setIsLoading(true);
-    try {
-      const response = await axios.post(
-        `${API_BASE}/user/getOtp`,
-        { email: formState.email },
-        { withCredentials: true }
-      );
-         console.log("this is inside of handle get Otp", otpPhase);
-        console.log(response);
-      if (response.status === 200 && response.data.success) {
-        setOtpPhase(true);
-        toast({
-          title: 'OTP sent to your email',
-          status: 'success',
-          duration: 3000,
-          isClosable: true,
-        });
-      } else {
-        throw new Error(response.data.message || 'Failed to send OTP');
-      }
+ const handleGetOtp = async () => {
+  setIsLoading(true);
+  try {
+    const response = await axios.post(
+      `${API_BASE}/user/getOtp`,
+      { email: formState.email }
+    );
 
-      console.log("this is inside of handle get Otp", otpPhase);
-    } catch (error) {
+    if (response.status === 200 && response.data.success) {
+      setOtpPhase(true);
       toast({
-        title: 'Error',
-        description: error.message,
-        status: 'error',
+        title: 'OTP sent to your email',
+        status: 'success',
         duration: 3000,
         isClosable: true,
       });
-    } finally {
-      setIsLoading(false);
+    } else {
+      throw new Error(response.data.message || 'Failed to send OTP');
     }
+  } catch (error) {
+    toast({
+      title: 'Error',
+      description: error.message,
+      status: 'error',
+      duration: 3000,
+      isClosable: true,
+    });
+  } finally {
+    setIsLoading(false);
+  }
 
     console.log("inside error in handlegetOtp" ,otpPhase);
   };
