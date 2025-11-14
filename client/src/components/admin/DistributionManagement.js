@@ -7,7 +7,6 @@ import {
   Input,
   Select,
   VStack,
-  HStack,
   Text,
   useToast,
 } from '@chakra-ui/react';
