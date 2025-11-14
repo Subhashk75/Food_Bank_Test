@@ -1,0 +1,14 @@
+{
+  "files": {
+    "main.css": "/static/css/main.1f676247.css",
+    "main.js": "/static/js/main.6f542142.js",
+    "static/media/FoodLogo.jpg": "/static/media/FoodLogo.0fdada0f7350179692a5.jpg",
+    "index.html": "/index.html",
+    "main.1f676247.css.map": "/static/css/main.1f676247.css.map",
+    "main.6f542142.js.map": "/static/js/main.6f542142.js.map"
+  },
+  "entrypoints": [
+    "static/css/main.1f676247.css",
+    "static/js/main.6f542142.js"
+  ]
+}

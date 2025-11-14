@@ -7,7 +7,7 @@ const PORT = process.env.PORT || 3001;
 const app = express();
 const productRoute = require("./routes/product");
 const transactionRoute = require("./routes/transaction")
-const inventoryRoute = require("./routes/Inventory")
+const inventoryRoute = require("./routes/inventory")
 const categoriesRoute = require("./routes/category")
 // Middleware
 app.use(cors({

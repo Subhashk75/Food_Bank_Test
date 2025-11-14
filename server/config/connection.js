@@ -1,7 +1,8 @@
+require('dotenv').config(); // Load environment variables from .env file
+
 const mongoose = require('mongoose');
 
-mongoose.connect('mongodb+srv://kumawatsubhash388:Bcg66wBub83hiKxd@cluster0.j8bsefk.mongodb.net/?retryWrites=true&w=majority&appName=Cluster0'
-, {
+mongoose.connect(process.env.MONGO_URI, { // Use environment variable for the connection string
   useNewUrlParser: true,
   useUnifiedTopology: true
 });
@@ -15,4 +16,3 @@ db.on('error', (err) => console.error('❌ MongoDB connection error:', err));
 db.on('disconnected', () => console.log('⚠️ MongoDB disconnected'));
 
 module.exports = db;
-
