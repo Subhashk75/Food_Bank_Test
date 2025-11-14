@@ -2,7 +2,7 @@
 import { Button, Flex, Text, FormControl, FormLabel, Heading, Input, Stack, Image, Box, Link, useToast, Select } from '@chakra-ui/react';
 import { Link as ReactRouterLink, useNavigate } from 'react-router-dom';
 import { useState, useEffect } from 'react';
-import { authService } from '../../components/utils/api';
+import { authService } from '../utils/api';
 import Auth from '../../components/utils/auth';
 
 const Login = () => {
