@@ -11,10 +11,12 @@ const inventoryRoute = require("./routes/inventory")
 const categoriesRoute = require("./routes/category")
 // Middleware
 app.use(cors({
-  origin: 'http://localhost:3000',
-  methods: ['GET', 'POST', 'PUT', 'DELETE', 'PATCH'],
-  credentials: true
-}));
+         origin: process.env.NODE_ENV === 'production' 
+           ? 'https://your-frontend-app.onrender.com'  // Replace with your actual Render frontend URL
+           : 'http://localhost:3000',  // Keep for local dev
+         methods: ['GET', 'POST', 'PUT', 'DELETE', 'PATCH'],
+         credentials: true
+       }));
 
 app.use(express.urlencoded({ extended: true }));
 app.use(express.json());

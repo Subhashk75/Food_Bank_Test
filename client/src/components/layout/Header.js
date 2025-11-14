@@ -1,76 +1,75 @@
-import React from 'react';
-import {
-  Flex,
-  Link,
-  Spacer,
-  useColorMode,
-  IconButton,
-  HStack,
-  Image,
-  useColorModeValue
-} from '@chakra-ui/react';
-import { useNavigate, Link as ReactRouterLink, useLocation } from 'react-router-dom';
+  import React from 'react';
+  import {
+    Flex,
+    Link,
+    Spacer,
+    useColorMode,
+    IconButton,
+    HStack,
+    Image,
+    useColorModeValue
+  } from '@chakra-ui/react';
+  import { useNavigate, Link as ReactRouterLink, useLocation } from 'react-router-dom';
 
-import Auth from '../utils/auth';
+  import Auth from '../utils/auth';
 
-// Import logo properly
-import Logo from '../../assets/FoodLogo.jpg';
+  // No need to import the logo here—reference it directly
 
-function Header() {
-  const { toggleColorMode } = useColorMode();
-  const navigate = useNavigate();
-  const location = useLocation();
+  function Header() {
+    const { toggleColorMode } = useColorMode();
+    const navigate = useNavigate();
+    const location = useLocation();
 
-  const bg = useColorModeValue("primary", "gray.800");
-  const color = useColorModeValue("black", "white");
-  const linkColor = useColorModeValue("black", "gray.200");
+    const bg = useColorModeValue("primary", "gray.800");
+    const color = useColorModeValue("black", "white");
+    const linkColor = useColorModeValue("black", "gray.200");
 
-  const handleLogout = () => {
-    Auth.logout();
-    navigate('/');
-  };
+    const handleLogout = () => {
+      Auth.logout();
+      navigate('/');
+    };
 
-  const linkStyles = {
-    textDecoration: 'none',
-    _hover: { textDecoration: 'none' },
-  };
+    const linkStyles = {
+      textDecoration: 'none',
+      _hover: { textDecoration: 'none' },
+    };
 
-  return (
-    <Flex as="header" bg={bg} color={color} p={4} align="center" boxShadow="md">
-      
-      <ReactRouterLink to="/dashboard" style={linkStyles}>
-        <Image
-          src={Logo}
-          alt="logo"
-          height="50px"
-          width="50px"
-          objectFit="contain"
+    return (
+      <Flex as="header" bg={bg} color={color} p={4} align="center" boxShadow="md">
+        
+        <ReactRouterLink to="/dashboard" style={linkStyles}>
+            <img
+      src="/assets/FoodLogo.jpg"
+      alt="logo"
+      style={{ height: '50px', width: '50px', objectFit: 'contain' }}
+    />
+    
+        </ReactRouterLink>
+
+        <Spacer />
+
+        <HStack spacing="30px">
+          {location.pathname !== '/dashboard' && (
+            <ReactRouterLink mx={2} to="/dashboard" style={{ color: linkColor }}>
+              Home
+            </ReactRouterLink>
+          )}
+
+          {Auth.loggedIn() && (
+            <Link mx={2} onClick={handleLogout} style={{ color: linkColor }}>
+              Log Out
+            </Link>
+          )}
+        </HStack>
+
+        <IconButton
+          ml={4}
+          onClick={toggleColorMode}
+          aria-label="Toggle Color Mode"
         />
-      </ReactRouterLink>
+      </Flex>
+    );
+  }
 
-      <Spacer />
-
-      <HStack spacing="30px">
-        {location.pathname !== '/dashboard' && (
-          <ReactRouterLink mx={2} to="/dashboard" style={{ color: linkColor }}>
-            Home
-          </ReactRouterLink>
-        )}
-
-        {Auth.loggedIn() && (
-          <Link mx={2} onClick={handleLogout} style={{ color: linkColor }}>
-            Log Out
-          </Link>
-        )}
-      </HStack>
-
-      <IconButton
-        ml={4}
-        onClick={toggleColorMode}
-        aria-label="Toggle Color Mode"
-      />
-    </Flex>
-  );
-}
-
-export default Header;
+  export default Header;
+  

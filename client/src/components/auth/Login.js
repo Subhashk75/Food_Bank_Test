@@ -1,4 +1,4 @@
-'use client'
+// Remove 'use client' – it's not needed for React/CRA
 import { Button, Flex, Text, FormControl, FormLabel, Heading, Input, Stack, Image, Box, Link, useToast, Select } from '@chakra-ui/react';
 import { Link as ReactRouterLink, useNavigate } from 'react-router-dom';
 import { useState, useEffect } from 'react';
@@ -12,13 +12,12 @@ const Login = () => {
   const toast = useToast();
 
   useEffect(() => {
-  if (Auth.loggedIn()) {
-    // Navigate only once
-    navigate('/dashboard', { replace: true });
-  }
-  // eslint-disable-next-line react-hooks/exhaustive-deps
-}, []); // ✅ empty array: runs once on mount
-
+    if (Auth.loggedIn()) {
+      // Navigate only once
+      navigate('/dashboard', { replace: true });
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []); // ✅ empty array: runs once on mount
 
   const handleChange = (e) => {
     const { name, value } = e.target;
@@ -31,7 +30,7 @@ const Login = () => {
 
     try {
       const response = await authService.login(formState);
-      console.log(response)
+      console.log(response);
       if (response.success) {
         Auth.login(response.token);
         toast({
@@ -61,7 +60,8 @@ const Login = () => {
     <Stack minH={'100vh'} direction={{ base: 'column', md: 'row' }}>
       <Flex p={8} flex={1} align={'center'} justify={'center'}>
         <Stack spacing={4} w={'full'} maxW={'md'}>
-          <Image src='../../images/logo.png' alt="logo" />
+          {/* Updated: Absolute path for public/assets/Login.webp */}
+          {/* <Image src="/assets/Login.webp" alt="logo" /> */}
           <Heading fontSize={'2xl'}>Sign in to your account</Heading>
 
           <form onSubmit={handleSubmit}>
@@ -91,7 +91,7 @@ const Login = () => {
                 <option value="">Select Role</option>
                 <option value="admin">admin</option>
                 <option value="staff">Staff</option>
-                <option value="volunteer" >Volunteer</option>
+                <option value="volunteer">Volunteer</option>
               </Select>
             </FormControl>
 
@@ -118,8 +118,9 @@ const Login = () => {
       </Flex>
 
       <Flex flex={1} display={{ base: 'none', md: 'flex' }}>
+        {/* Updated: Absolute path for public/images/food.jpg */}
         <Image
-          src={'../../images/food.jpg'}
+          src="/assets/Login.webp"
           alt={'Login Image'}
           objectFit={'cover'}
           w="full"
