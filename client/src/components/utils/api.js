@@ -15,7 +15,7 @@ const apiRequest = async (endpoint, method, data = null) => {
 
   try {
     const response = await fetch(url, config);
-    if (!response.ok) {
+    if (!response.ok) {    
       const errorData = await response.json().catch(() => ({}));
       const error = new Error(errorData.message || `HTTP error! Status: ${response.status}`);
       error.status = response.status;
