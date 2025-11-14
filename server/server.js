@@ -31,9 +31,10 @@ app.use('/api/v1/categories' ,categoriesRoute );
 if (process.env.NODE_ENV === 'production') {
   app.use(express.static(path.join(__dirname, '../client/build')));
   app.get('*', (req, res) => {
-    res.sendFile(path.join(__dirname, '../client/build'));
+    res.sendFile(path.join(__dirname, '../client/build/index.html'));
   });
 }
+
 
 // Database connection
 db.once('open', () => {
